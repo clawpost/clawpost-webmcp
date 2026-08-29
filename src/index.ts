@@ -7,9 +7,9 @@ export {
   type WebMcpTool,
   type WebMcpToolAnnotations,
   type WebMcpToolResult,
-} from './types.js';
+} from './types';
 export {
   getModelContext,
   isWebMcpAvailable,
   registerWebMcpTools,
-} from './model-context.js';
+} from './model-context';

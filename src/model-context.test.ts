@@ -3,9 +3,9 @@ import {
   getModelContext,
   isWebMcpAvailable,
   registerWebMcpTools,
-} from './model-context.js';
-import { installMockModelContext } from './mock.js';
-import { structuredResult, textResult, type WebMcpTool } from './types.js';
+} from './model-context';
+import { installMockModelContext } from './mock';
+import { structuredResult, textResult, type WebMcpTool } from './types';
 
 function makeTool(name: string): WebMcpTool {
   return {

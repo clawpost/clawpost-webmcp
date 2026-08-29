@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { errorResult, structuredResult, textResult } from './types.js';
+import { errorResult, structuredResult, textResult } from './types';
 
 describe('result helpers', () => {
   it('textResult wraps text in a content block', () => {

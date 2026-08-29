@@ -5,7 +5,7 @@
 // API exists, this module maintains one merged tool set and re-provides it on
 // every change so route-scoped registrations still compose.
 
-import type { ModelContextLike, WebMcpTool } from './types.js';
+import type { ModelContextLike, WebMcpTool } from './types';
 
 type ModelContextHost = {
   document?: { modelContext?: ModelContextLike };

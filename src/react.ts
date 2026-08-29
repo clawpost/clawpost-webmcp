@@ -3,8 +3,8 @@
 // the browser, and browsers without a modelContext no-op.
 
 import { useEffect } from 'react';
-import { registerWebMcpTools } from './model-context.js';
-import type { WebMcpTool } from './types.js';
+import { registerWebMcpTools } from './model-context';
+import type { WebMcpTool } from './types';
 
 /**
  * Register `tools` while the calling component is mounted. Re-registers when

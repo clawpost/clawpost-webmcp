@@ -42,7 +42,7 @@ describe('getModelContext', () => {
 
 describe('registerWebMcpTools with registerTool', () => {
   it('registers tools and unregisters them on dispose', () => {
-    const host: { document?: { modelContext?: unknown } } = {};
+    const host: Parameters<typeof installMockModelContext>[0] = {};
     const mock = installMockModelContext(host);
 
     const dispose = registerWebMcpTools([makeTool('a'), makeTool('b')], host);
@@ -53,7 +53,7 @@ describe('registerWebMcpTools with registerTool', () => {
   });
 
   it('a later registration of the same name survives an earlier dispose', () => {
-    const host: { document?: { modelContext?: unknown } } = {};
+    const host: Parameters<typeof installMockModelContext>[0] = {};
     const mock = installMockModelContext(host);
 
     const first = registerWebMcpTools([makeTool('a')], host);
@@ -65,7 +65,7 @@ describe('registerWebMcpTools with registerTool', () => {
   });
 
   it('executes the registered tool like an agent would', async () => {
-    const host: { document?: { modelContext?: unknown } } = {};
+    const host: Parameters<typeof installMockModelContext>[0] = {};
     const mock = installMockModelContext(host);
     const tool: WebMcpTool = {
       name: 'quote',

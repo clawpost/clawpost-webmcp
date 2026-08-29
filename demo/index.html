@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>WebMCP counter demo</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --ink: #1c1a17;
+        --paper: #faf6ef;
+        --line: #d8d0c2;
+        --accent: #b4451f;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --ink: #ece5d8;
+          --paper: #191713;
+          --line: #3a352c;
+          --accent: #e8834f;
+        }
+      }
+      body {
+        margin: 0;
+        background: var(--paper);
+        color: var(--ink);
+        font: 15px/1.55 ui-monospace, Menlo, monospace;
+        padding: 32px 20px 64px;
+        max-width: 720px;
+        margin-inline: auto;
+      }
+      h1 {
+        font-size: 20px;
+        letter-spacing: 0.02em;
+      }
+      .status {
+        border: 1px solid var(--line);
+        padding: 10px 14px;
+        border-radius: 6px;
+        margin: 16px 0;
+      }
+      button {
+        font: inherit;
+        padding: 8px 14px;
+        border: 1px solid var(--accent);
+        color: var(--accent);
+        background: none;
+        border-radius: 6px;
+        cursor: pointer;
+        margin: 4px 6px 4px 0;
+      }
+      pre {
+        background: rgba(127, 127, 127, 0.12);
+        padding: 12px;
+        border-radius: 6px;
+        overflow-x: auto;
+        white-space: pre-wrap;
+      }
+      label {
+        display: block;
+        margin: 10px 0 4px;
+      }
+      input,
+      textarea {
+        font: inherit;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 8px;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        background: transparent;
+        color: inherit;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>WebMCP counter demo</h1>
+    <p>
+      This page registers two tools the way the ClawPost web app does: a
+      read-only <code>quote_letter</code> and a <code>draft_letter</code> that
+      fills the visible form — and deliberately no <code>send</code>. In a
+      WebMCP-enabled browser (Chrome 149+ with
+      <code>chrome://flags/#enable-webmcp-testing</code>, or ChatGPT's
+      browser) ask the built-in agent to quote or draft a letter. Without one,
+      use the buttons below to play the agent yourself against the exact same
+      registration path.
+    </p>
+    <div class="status" id="status">Detecting modelContext…</div>
+
+    <label for="to">Recipient</label>
+    <input id="to" placeholder="CP-000123" />
+    <label for="content">Letter</label>
+    <textarea id="content" rows="5" placeholder="Dear…"></textarea>
+
+    <p>
+      <button id="btn-list">List tools (as agent)</button>
+      <button id="btn-quote">Call quote_letter (as agent)</button>
+      <button id="btn-draft">Call draft_letter (as agent)</button>
+    </p>
+    <pre id="log">—</pre>
+
+    <script type="module">
+      // Inline mirror of @clawpost/webmcp's registration path (the package
+      // ships TypeScript; this demo stays build-free). Same semantics:
+      // prefer document.modelContext.registerTool, fall back to a mock.
+      const log = (v) =>
+        (document.getElementById('log').textContent =
+          typeof v === 'string' ? v : JSON.stringify(v, null, 2));
+
+      const tools = new Map();
+      let surface = document.modelContext ?? navigator.modelContext ?? null;
+      const native = Boolean(surface?.registerTool);
+      if (!native) {
+        surface = {
+          registerTool(tool) {
+            tools.set(tool.name, tool);
+          },
+        };
+      } else {
+        const real = surface.registerTool.bind(surface);
+        surface.registerTool = (tool, options) => {
+          tools.set(tool.name, tool);
+          return real(tool, options);
+        };
+      }
+      document.getElementById('status').textContent = native
+        ? 'Native modelContext found — your browser agent can call these tools.'
+        : 'No modelContext in this browser — mock installed; use the buttons to play the agent.';
+
+      const structured = (data) => ({
+        content: [{ type: 'text', text: JSON.stringify(data, null, 2) }],
+        structuredContent: data,
+      });
+
+      surface.registerTool({
+        name: 'quote_letter',
+        description:
+          'Quote postage for a letter without committing to send it.',
+        inputSchema: {
+          type: 'object',
+          properties: { content: { type: 'string' } },
+          required: ['content'],
+        },
+        annotations: { readOnlyHint: true },
+        async execute({ content }) {
+          const pages = Math.max(1, Math.ceil((content ?? '').length / 1500));
+          return structured({
+            price_cents: 250 + (pages - 1) * 50,
+            pages,
+            note: 'Demo pricing. The real app quotes the live provider.',
+          });
+        },
+      });
+
+      surface.registerTool({
+        name: 'draft_letter',
+        description:
+          'Fill the visible composer with a draft. Nothing is sent — on ClawPost, sending is reserved for the human because postage costs money and letters cannot be recalled.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            to: { type: 'string' },
+            content: { type: 'string' },
+          },
+          required: ['to', 'content'],
+        },
+        async execute({ to, content }) {
+          document.getElementById('to').value = to ?? '';
+          document.getElementById('content').value = content ?? '';
+          return structured({
+            filled: true,
+            guidance:
+              'The human reviews the visible draft and presses Send themselves.',
+          });
+        },
+      });
+
+      const call = async (name, args) => {
+        const tool = tools.get(name);
+        log(tool ? await tool.execute(args) : `no tool ${name}`);
+      };
+      document.getElementById('btn-list').onclick = () =>
+        log([...tools.keys()]);
+      document.getElementById('btn-quote').onclick = () =>
+        call('quote_letter', {
+          content: document.getElementById('content').value || 'Dear demo…',
+        });
+      document.getElementById('btn-draft').onclick = () =>
+        call('draft_letter', {
+          to: 'CP-000123',
+          content: 'Dear neighbour,\n\nDrafted by the demo agent.',
+        });
+    </script>
+  </body>
+</html>

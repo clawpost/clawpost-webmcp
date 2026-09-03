@@ -12,6 +12,29 @@
 Real paper letters, drafted together: your browser agent works the counter,
 you lick the stamp.
 
+## Official form fields
+
+- **Submitter Type:** `[CONFIRM: Individual / Team of Individuals / Organization]`
+- **Country of residence:** `[CONFIRM]`
+- **Organization name:** `[ONLY IF ORGANIZATION]`
+- **App Status:** Existing
+- **What changed during the submission period:** Added the WebMCP surface after
+  August 25: browser-native tool registration, signed-in session actions,
+  route-scoped visible-composer collaboration, postage quotes, explicit
+  human-only send handoff, runtime validation, minimized results, native-browser
+  and Playwright coverage, and the public adapter/demo repository.
+- **Live URL:** `https://staging.clawpost.org/mail`
+- **Testing instructions:** use the private instructions below.
+- **Public code repository:** `https://github.com/clawpost/clawpost-webmcp`
+- **Agents/clients tested:** Chrome 152 native `document.modelContext` binding;
+  Playwright's scripted browser-agent harness; `[ADD ChatGPT in-app browser only
+after the real take succeeds]`.
+- **AI tools used while building:** Codex desktop/CLI for repository archaeology,
+  security review, implementation, tests, browser validation, and submission
+  drafting; `[ADD the real video client only after it succeeds]`.
+- **Level of learning:** `[CONFIRM; recommended: Significant]`
+- **Reusable career AI value:** `[CONFIRM: Yes / No]`
+
 ## Inspiration / what ClawPost is
 
 ClawPost is a postal service for AI agents — not metaphorically: real
@@ -89,6 +112,24 @@ the human accepts the draft, the agent hits the handoff boundary, and the test
 then clicks Send as the human. The submission video uses a real browser agent
 choosing and calling those WebMCP tools.
 
+## How AI capabilities are used
+
+The model turns a human request into a small tool plan: discover the page's
+current tools, identify the signed-in counter, compose letter text, fill the
+visible form, and request a deterministic postage quote. The model provides
+language and judgment; ClawPost provides authenticated capabilities and policy.
+The model never receives an unrestricted browser-action substitute for Send.
+
+## How Codex was used
+
+Codex traced the existing remote-MCP and browser flows, reviewed the public
+adapter and application tool boundary, implemented lifecycle and response-shape
+hardening, and expanded unit and browser tests. The local movie run exposed an
+ESM-versus-TypeScript bundler integration bug; Codex repaired it and reran the
+complete filmed arc. Codex also checked the live rules/resources and rewrote the
+story around the product that is actually running. A required Claude one-shot
+review was attempted but returned no output, so it is not counted as evidence.
+
 ## Business
 
 The commercial direct-mail lane (utility letters to any postal address,
@@ -124,12 +165,33 @@ Keep the live judge path free and available without restrictions through
 2026-09-21 17:00 PT. After the submission deadline, freeze the submitted site,
 repository, and Devpost entry until judging ends.
 
+## Screenshot shot list
+
+1. `/mail` with the agent panel and `clawpost_fill_composer` call visible as
+   recipient and letter fields populate.
+2. The postage quote beside the still-editable visible composition.
+3. The review page immediately after the agent is told “Send it,” showing
+   **DRAFT — NOT SENT YET** and the human-only Send button.
+4. The successful confirmation immediately after the human click.
+5. The persistent-agent explanation or connector page, captioned as a separate
+   remote-MCP identity mode.
+
 ## What's next
 
 Wallet auto-reload for agents, MPP (Machine Payments Protocol) on the quote
 endpoint — quote → payment request is a small delta on our existing flow —
 and opening the commercial lane in production once the VAT treatment of the
 wallet is settled.
+
+## Known limitations
+
+- The real-model ChatGPT in-app-browser take is not recorded yet; current local
+  proof includes native Chrome registration plus scripted Playwright invocation.
+- Judges need a funded seeded staging account supplied only in Devpost's private
+  testing field.
+- Direct Post is staging-only and excluded from the main demo claim.
+- The public repository contains the WebMCP adapter and standalone demo, not yet
+  all source/assets required to reproduce the full hosted ClawPost experience.
 
 ---
 

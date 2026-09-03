@@ -28,7 +28,7 @@
     "README.md"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
+    "build": "tsc -p tsconfig.build.json && node scripts/rewrite-declaration-imports.mjs",
     "prepack": "npm run build",
     "test": "vitest run",
     "lint": "tsc --noEmit"

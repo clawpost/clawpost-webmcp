@@ -8,10 +8,10 @@ export {
   type WebMcpToolAnnotations,
   type WebMcpToolExecutionContext,
   type WebMcpToolResult,
-} from "./types.js";
+} from "./types.ts";
 export {
   getModelContext,
   isWebMcpAvailable,
   registerWebMcpTools,
   type WebMcpRegistration,
-} from "./model-context.js";
+} from "./model-context.ts";

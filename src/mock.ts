@@ -7,7 +7,7 @@ import type {
   ModelContextLike,
   WebMcpTool,
   WebMcpToolResult,
-} from "./types.js";
+} from "./types.ts";
 
 export type MockModelContext = ModelContextLike & {
   /** Names of currently registered tools, registration order. */

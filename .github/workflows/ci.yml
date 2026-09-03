@@ -36,3 +36,5 @@ jobs:
           npm install --ignore-scripts --prefix "$smoke_directory" "./$package_tarball"
           cd "$smoke_directory"
           node --input-type=module -e "await import('@clawpost/webmcp'); await import('@clawpost/webmcp/mock')"
+          printf '%s\n' "import { registerWebMcpTools } from '@clawpost/webmcp';" "void registerWebMcpTools;" > consumer.mts
+          "$GITHUB_WORKSPACE/node_modules/.bin/tsc" --noEmit --target ES2022 --module NodeNext --moduleResolution NodeNext consumer.mts

@@ -24,7 +24,10 @@
         margin: 0;
         background: var(--paper);
         color: var(--ink);
-        font: 15px/1.55 ui-monospace, Menlo, monospace;
+        font:
+          15px/1.55 ui-monospace,
+          Menlo,
+          monospace;
         padding: 32px 20px 64px;
         max-width: 720px;
         margin-inline: auto;
@@ -80,9 +83,9 @@
       read-only <code>quote_letter</code> and a <code>draft_letter</code> that
       fills the visible form — and deliberately no <code>send</code>. In a
       WebMCP-enabled browser (Chrome 149+ with
-      <code>chrome://flags/#enable-webmcp-testing</code>, or ChatGPT's
-      browser) ask the built-in agent to quote or draft a letter. Without one,
-      use the buttons below to play the agent yourself against the exact same
+      <code>chrome://flags/#enable-webmcp-testing</code>, or ChatGPT's browser)
+      ask the built-in agent to quote or draft a letter. Without one, use the
+      buttons below to play the agent yourself against the exact same
       registration path.
     </p>
     <div class="status" id="status">Detecting modelContext…</div>
@@ -104,8 +107,8 @@
       // ships TypeScript; this demo stays build-free). Same semantics:
       // prefer document.modelContext.registerTool, fall back to a mock.
       const log = (v) =>
-        (document.getElementById('log').textContent =
-          typeof v === 'string' ? v : JSON.stringify(v, null, 2));
+        (document.getElementById("log").textContent =
+          typeof v === "string" ? v : JSON.stringify(v, null, 2));
 
       const tools = new Map();
       let surface = document.modelContext ?? navigator.modelContext ?? null;
@@ -123,54 +126,85 @@
           return real(tool, options);
         };
       }
-      document.getElementById('status').textContent = native
-        ? 'Native modelContext found — your browser agent can call these tools.'
-        : 'No modelContext in this browser — mock installed; use the buttons to play the agent.';
+      document.getElementById("status").textContent = native
+        ? "Native modelContext found — your browser agent can call these tools."
+        : "No modelContext in this browser — mock installed; use the buttons to play the agent.";
 
       const structured = (data) => ({
-        content: [{ type: 'text', text: JSON.stringify(data, null, 2) }],
+        content: [{ type: "text", text: JSON.stringify(data, null, 2) }],
         structuredContent: data,
       });
 
       surface.registerTool({
-        name: 'quote_letter',
+        name: "quote_letter",
         description:
-          'Quote postage for a letter without committing to send it.',
+          "Quote postage for a letter without committing to send it.",
         inputSchema: {
-          type: 'object',
-          properties: { content: { type: 'string' } },
-          required: ['content'],
+          type: "object",
+          properties: { content: { type: "string" } },
+          required: ["content"],
         },
-        annotations: { readOnlyHint: true },
+        annotations: {
+          readOnlyHint: true,
+          untrustedContentHint: false,
+          consequentialHint: false,
+        },
         async execute({ content }) {
-          const pages = Math.max(1, Math.ceil((content ?? '').length / 1500));
+          if (
+            typeof content !== "string" ||
+            content.trim().length === 0 ||
+            content.length > 5000
+          ) {
+            return {
+              content: [{ type: "text", text: "Invalid letter content." }],
+              isError: true,
+            };
+          }
+          const pages = Math.max(1, Math.ceil((content ?? "").length / 1500));
           return structured({
             price_cents: 250 + (pages - 1) * 50,
             pages,
-            note: 'Demo pricing. The real app quotes the live provider.',
+            note: "Demo pricing. The real app quotes the live provider.",
           });
         },
       });
 
       surface.registerTool({
-        name: 'draft_letter',
+        name: "draft_letter",
         description:
-          'Fill the visible composer with a draft. Nothing is sent — on ClawPost, sending is reserved for the human because postage costs money and letters cannot be recalled.',
+          "Fill the visible composer with a draft. Nothing is sent — on ClawPost, sending is reserved for the human because postage costs money and letters cannot be recalled.",
         inputSchema: {
-          type: 'object',
+          type: "object",
           properties: {
-            to: { type: 'string' },
-            content: { type: 'string' },
+            to: { type: "string" },
+            content: { type: "string" },
           },
-          required: ['to', 'content'],
+          required: ["to", "content"],
+        },
+        annotations: {
+          readOnlyHint: false,
+          untrustedContentHint: false,
+          consequentialHint: false,
         },
         async execute({ to, content }) {
-          document.getElementById('to').value = to ?? '';
-          document.getElementById('content').value = content ?? '';
+          if (
+            typeof to !== "string" ||
+            to.trim().length === 0 ||
+            typeof content !== "string" ||
+            content.trim().length === 0 ||
+            content.length > 5000
+          ) {
+            return {
+              content: [{ type: "text", text: "Invalid recipient or letter." }],
+              isError: true,
+            };
+          }
+          document.getElementById("to").value = to ?? "";
+          document.getElementById("content").value = content ?? "";
           return structured({
             filled: true,
             guidance:
-              'The human reviews the visible draft and presses Send themselves.',
+              "The human reviews the visible draft and presses Send themselves.",
           });
         },
       });
@@ -179,16 +213,16 @@
         const tool = tools.get(name);
         log(tool ? await tool.execute(args) : `no tool ${name}`);
       };
-      document.getElementById('btn-list').onclick = () =>
+      document.getElementById("btn-list").onclick = () =>
         log([...tools.keys()]);
-      document.getElementById('btn-quote').onclick = () =>
-        call('quote_letter', {
-          content: document.getElementById('content').value || 'Dear demo…',
+      document.getElementById("btn-quote").onclick = () =>
+        call("quote_letter", {
+          content: document.getElementById("content").value || "Dear demo…",
         });
-      document.getElementById('btn-draft').onclick = () =>
-        call('draft_letter', {
-          to: 'CP-000123',
-          content: 'Dear neighbour,\n\nDrafted by the demo agent.',
+      document.getElementById("btn-draft").onclick = () =>
+        call("draft_letter", {
+          to: "CP-000123",
+          content: "Dear neighbour,\n\nDrafted by the demo agent.",
         });
     </script>
   </body>

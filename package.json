@@ -9,9 +9,18 @@
     "url": "https://github.com/clawpost/clawpost-webmcp.git"
   },
   "exports": {
-    ".": "./src/index.ts",
-    "./react": "./src/react.ts",
-    "./mock": "./src/mock.ts"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./react": {
+      "types": "./dist/react.d.ts",
+      "import": "./dist/react.js"
+    },
+    "./mock": {
+      "types": "./dist/mock.d.ts",
+      "import": "./dist/mock.js"
+    }
   },
   "files": [
     "dist",
@@ -20,6 +29,7 @@
   ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
+    "prepack": "npm run build",
     "test": "vitest run",
     "lint": "tsc --noEmit"
   },

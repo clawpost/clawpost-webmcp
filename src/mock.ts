@@ -7,7 +7,7 @@ import type {
   ModelContextLike,
   WebMcpTool,
   WebMcpToolResult,
-} from './types';
+} from "./types.js";
 
 export type MockModelContext = ModelContextLike & {
   /** Names of currently registered tools, registration order. */
@@ -17,7 +17,7 @@ export type MockModelContext = ModelContextLike & {
   /** Call a registered tool the way a browser agent would. */
   callTool: (
     name: string,
-    args?: Record<string, unknown>
+    args?: Record<string, unknown>,
   ) => Promise<WebMcpToolResult>;
 };
 
@@ -36,7 +36,7 @@ export function installMockModelContext(host?: MockHost): MockModelContext {
   const mock: MockModelContext = {
     registerTool(tool: WebMcpTool, options?: { signal?: AbortSignal }) {
       tools.set(tool.name, tool);
-      options?.signal?.addEventListener('abort', () => {
+      options?.signal?.addEventListener("abort", () => {
         // Only remove if this registration still owns the name.
         if (tools.get(tool.name) === tool) {
           tools.delete(tool.name);
@@ -52,7 +52,7 @@ export function installMockModelContext(host?: MockHost): MockModelContext {
     },
     async callTool(
       name: string,
-      args: Record<string, unknown> = {}
+      args: Record<string, unknown> = {},
     ): Promise<WebMcpToolResult> {
       const tool = tools.get(name);
       if (!tool) {

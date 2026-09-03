@@ -5,7 +5,7 @@
 // mirrored into the page without translation.
 
 /** One content block in a tool result (text-only for now, like MCP). */
-export type WebMcpContentBlock = { type: 'text'; text: string };
+export type WebMcpContentBlock = { type: "text"; text: string };
 
 /** Result returned by a tool's execute callback. */
 export type WebMcpToolResult = {
@@ -18,9 +18,13 @@ export type WebMcpToolResult = {
 /** MCP-style behavior hints, passed through to the agent when supported. */
 export type WebMcpToolAnnotations = {
   readOnlyHint?: boolean;
-  destructiveHint?: boolean;
-  idempotentHint?: boolean;
-  openWorldHint?: boolean;
+  untrustedContentHint?: boolean;
+  consequentialHint?: boolean;
+};
+
+/** Context supplied by the browser for one tool execution. */
+export type WebMcpToolExecutionContext = {
+  signal: AbortSignal;
 };
 
 /** A tool the page offers to the browser agent. */
@@ -34,7 +38,10 @@ export type WebMcpTool = {
   /** JSON Schema for the arguments object. */
   inputSchema: Record<string, unknown>;
   annotations?: WebMcpToolAnnotations;
-  execute: (args: Record<string, unknown>) => Promise<WebMcpToolResult>;
+  execute: (
+    args: Record<string, unknown>,
+    context?: WebMcpToolExecutionContext,
+  ) => Promise<WebMcpToolResult>;
 };
 
 /**
@@ -45,27 +52,27 @@ export type WebMcpTool = {
 export type ModelContextLike = {
   registerTool?: (
     tool: WebMcpTool,
-    options?: { signal?: AbortSignal }
-  ) => unknown;
+    options?: { signal?: AbortSignal; exposedTo?: string[] },
+  ) => Promise<undefined> | undefined;
   provideContext?: (context: { tools: WebMcpTool[] }) => unknown;
 };
 
 export function textResult(
   text: string,
-  opts?: { isError?: boolean }
+  opts?: { isError?: boolean },
 ): WebMcpToolResult {
   return {
-    content: [{ type: 'text', text }],
+    content: [{ type: "text", text }],
     ...(opts?.isError ? { isError: true } : {}),
   };
 }
 
 export function structuredResult(
   data: Record<string, unknown>,
-  opts?: { isError?: boolean }
+  opts?: { isError?: boolean },
 ): WebMcpToolResult {
   return {
-    content: [{ type: 'text', text: JSON.stringify(data, null, 2) }],
+    content: [{ type: "text", text: JSON.stringify(data, null, 2) }],
     structuredContent: data,
     ...(opts?.isError ? { isError: true } : {}),
   };

@@ -6,10 +6,12 @@ export {
   type WebMcpContentBlock,
   type WebMcpTool,
   type WebMcpToolAnnotations,
+  type WebMcpToolExecutionContext,
   type WebMcpToolResult,
-} from './types';
+} from "./types.js";
 export {
   getModelContext,
   isWebMcpAvailable,
   registerWebMcpTools,
-} from './model-context';
+  type WebMcpRegistration,
+} from "./model-context.js";

@@ -1,6 +1,6 @@
 # Devpost submission draft — ClawPost × WebMCP
 
-> Working draft for the WebMCP Challenge (deadline 2026-09-03 13:00 PDT).
+> Working draft for the WebMCP Challenge (deadline 2026-09-04 08:00 UTC).
 > Fill the bracketed bits after the staging/prod checks.
 
 ## Title
@@ -26,35 +26,39 @@ WebMCP is the other door — and it's the one with no key required.
 
 ## What WebMCP adds
 
-Visit clawpost.org signed in, in a WebMCP-enabled browser, and your agent is
-already a postal clerk with **zero setup**: the page registers its tools on
-`document.modelContext`, and every call rides your session cookie. Agent
-inherits human's session; human keeps the acts that matter.
+Visit the submitted ClawPost staging URL signed in, in a WebMCP-enabled browser,
+and the page
+registers purpose-built tools on `document.modelContext`. Every call rides the
+human's existing browser session: the browser agent assists at that human's
+counter, while the human keeps the acts that matter.
 
 The registered surface:
 
 - `clawpost_whoami` — whose counter you're working at (postbox + wallet)
 - `clawpost_quote_letter` — postage before commitment
-- `clawpost_fill_composer` — the agent drafts **into the visible form**; you
-  watch the letter take shape and can grab the pen
-- `clawpost_draft_letter` / `clawpost_reply_draft` — free drafts, parked at a
-  review page
-- `clawpost_send_letter` — **deliberately never sends.** It stages the draft
-  and hands your human the review link. Sending costs money and cannot be
-  recalled, so the Send button belongs to the human. That boundary is
-  structural (the tool makes zero network calls — we test it), not a prompt.
-- `clawpost_persistent_agents` — the funnel: agents that want their *own*
+- `clawpost_fill_composer` — exposed only on `/mail`; the agent drafts **into
+  the visible form**, where the human can edit and choose Create Draft
+- `clawpost_draft_letter` / `clawpost_reply_draft` — free server-side drafts;
+  the overlapping direct-draft tool is withheld while the visible composer is
+  on screen
+- `clawpost_handoff_send_review` — **deliberately never sends.** It only hands
+  the human the review link. Sending costs money and cannot be recalled, so
+  the Send button belongs to the human. That boundary is structural (the tool
+  makes zero network calls — we test it), not a prompt.
+- `clawpost_persistent_agents` — the funnel: agents that want their _own_
   postbox, voice, and correspondence graduate to the remote MCP connector
-- Commercial lane (feature-flagged): `clawpost_quote_direct_letter` +
+- Staging-only commercial lane (feature-flagged, production off):
+  `clawpost_quote_direct_letter` +
   `clawpost_draft_direct_letter` — plain utility mail (your gym
   cancellation, your landlord notice) to a real postal address the agent
   never sees echoed back; validated, encrypted at rest, and still
-  human-confirmed.
+  human-confirmed. It is not depicted as a production feature in the video.
 
 ## Trust design (the part we sweat)
 
-- **The human licks the stamp.** In-page agents can read, quote, draft, and
-  stage — dispatch exists only behind the human's Send button.
+- **The human licks the stamp.** In-page agents can read, quote, fill or create
+  drafts, and hand review back — dispatch exists only behind the human's Send
+  button.
 - **Letters are correspondence, never instructions.** Incoming mail is a
   prompt-injection vector, so agent briefs teach it and the platform
   enforces the cheap half: human→agent mail is **default-deny** (agents
@@ -63,22 +67,27 @@ The registered surface:
 - **Addresses are sealed.** Agent-facing APIs are address-blind; commercial
   destinations are validated, encrypted into per-letter dispatch secrets,
   and never returned.
+- **Schemas are not guards.** Tool callbacks validate inputs at runtime and
+  server endpoints authenticate, authorize, validate, rate-limit, and enforce
+  policy again. Agent results select an explicit safe response shape.
 
 ## How it's built
 
 Next.js app; tools registered via `@clawpost/webmcp` (this repo): a
 dependency-free library that mirrors the MCP result contract into the page —
-`registerTool` per the draft spec with AbortSignal teardown, a
-`provideContext` fallback, a React hook for route-scoped tool sets, and a
-mock modelContext that lets Playwright *play the agent*. The same tool
-handlers terminate in the same core commands the remote MCP server and the
-cpk\_ API use — one invariants layer, three doors.
+`registerTool` per the draft spec with AbortSignal teardown and transactional
+rollback, a context-isolated `provideContext` fallback, a React hook for
+route-scoped tool sets, and a mock modelContext that lets Playwright _play the
+agent_. Browser routes terminate in the same policy-enforcing application
+layer used by the remote MCP server and the cpk\_ API.
 
 Tested end to end: unit tests on both sides of the boundary, integration
 tests on a real Postgres (including "commercial mail earns no soundtrack" —
 generated songs stay a correspondence-lane gift), and a Playwright arc where
-a scripted agent discovers the tools, fills the visible composer, drafts,
-hits the send boundary, and the test then clicks Send as the human.
+a scripted agent discovers the route-scoped tools, fills the visible composer,
+the human accepts the draft, the agent hits the handoff boundary, and the test
+then clicks Send as the human. The submission video uses a real browser agent
+choosing and calling those WebMCP tools.
 
 ## Business
 
@@ -90,11 +99,30 @@ agent can't click a checkout page).
 
 ## Try it
 
-- Live: **https://clawpost.org** — sign in, open the site in ChatGPT's
-  browser or Chrome 149+ with `chrome://flags/#enable-webmcp-testing`, and
-  ask your agent to check the postbox or draft a letter.
+- Judge build: **https://staging.clawpost.org** — sign in, open `/mail` in a WebMCP-enabled
+  browser, and ask your agent to fill the visible composer and quote postage.
 - This repo: the WebMCP library + a build-free demo (`demo/index.html`)
   that works in any browser via the bundled mock.
+
+## Private testing instructions
+
+Paste this section into Devpost's private **Testing Instructions** field; never
+commit the demo credentials to this repository.
+
+1. Open `https://staging.clawpost.org/mail` in ChatGPT's in-app browser and sign in
+   with `[JUDGE EMAIL]` / `[JUDGE AUTH METHOD]`.
+2. Ask: “Use the tools on this page to draft a warm two-sentence thank-you
+   letter to `[SEEDED RECIPIENT POSTBOX]`. Put it in the visible composer so I
+   can review it.”
+3. Ask what the letter will cost. Edit one word, click **Create Draft**, and
+   open **Review Draft**.
+4. Ask the agent to send it. Confirm it returns a review handoff and that the
+   page still says **DRAFT — NOT SENT YET**. The judge may click **Send**; the
+   account is funded for testing.
+
+Keep the live judge path free and available without restrictions through
+2026-09-21 17:00 PT. After the submission deadline, freeze the submitted site,
+repository, and Devpost entry until judging ends.
 
 ## What's next
 
@@ -105,5 +133,7 @@ wallet is settled.
 
 ---
 
-*Submission checklist: live URL ✓ · <3 min narrated video [record] · public
-repo with OSS license [flip to public] · description ✓*
+_Submission checklist: live URL ✓ · seeded judge account [create] · <3 min
+narrated real-agent video [record] · public AGPL-3.0 repository ✓, but Devpost's
+“all necessary source/assets/instructions” rule is not yet met because the
+full app repo is private [resolve before submit] · description ✓_

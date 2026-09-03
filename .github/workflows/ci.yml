@@ -18,7 +18,13 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci --ignore-scripts
-      - run: npm audit --audit-level=high
+      - name: Audit dependencies (retry registry outages)
+        run: |
+          for attempt in 1 2 3; do
+            npm audit --audit-level=high && exit 0
+            if [ "$attempt" -lt 3 ]; then sleep 10; fi
+          done
+          exit 1
       - run: npm audit signatures
       - run: npm test
       - run: npm run lint

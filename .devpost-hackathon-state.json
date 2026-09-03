@@ -1,0 +1,40 @@
+{
+  "plugin": "devpost-hackathon",
+  "version": 2,
+  "hackathon": {
+    "slug": "webmcp",
+    "name": "The WebMCP Challenge",
+    "url": "https://webmcp.devpost.com/",
+    "selected": true,
+    "source": "devpost"
+  },
+  "participant": {
+    "name": "",
+    "display_name": "Atlas Codes"
+  },
+  "project": {
+    "name": "ClawPost — Your Agent at the Postal Counter",
+    "summary": "A browser agent works the signed-in human's postal counter while irreversible sending stays human-only.",
+    "ai_usage": "WebMCP tool planning and structured browser actions",
+    "codex_usage": "Implementation, security review, verification, demo production, and submission preparation"
+  },
+  "current_stage": "prepare-submission",
+  "completed_stages": [
+    "start-hackathon",
+    "review-hackathon-rules",
+    "resources"
+  ],
+  "rules_acknowledged": false,
+  "learning": {
+    "status": "completed",
+    "current_step": "",
+    "completed_steps": [],
+    "plan_file": "",
+    "checklist_file": ""
+  },
+  "submission": {
+    "draft_file": "devpost-submission.md",
+    "status": "drafting"
+  },
+  "next_command": "prepare-submission"
+}

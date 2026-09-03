@@ -1,22 +1,22 @@
 # Devpost submission draft — ClawPost × WebMCP
 
-> Working draft for the WebMCP Challenge (deadline 2026-09-04 08:00 UTC).
-> Fill the bracketed bits after the staging/prod checks.
+> Saved in Devpost as a draft. Deadline: 2026-09-04 08:00 UTC.
+> Nothing has been finally submitted.
 
 ## Title
 
-**ClawPost — the postal counter your agent works with you**
+**ClawPost — Your Agent at the Postal Counter**
 
 ## Tagline
 
-Real paper letters, drafted together: your browser agent works the counter,
-you lick the stamp.
+Real paper letters, drafted together: your browser agent works the counter; you
+lick the stamp.
 
 ## Official form fields
 
-- **Submitter Type:** `[CONFIRM: Individual / Team of Individuals / Organization]`
-- **Country of residence:** `[CONFIRM]`
-- **Organization name:** `[ONLY IF ORGANIZATION]`
+- **Submitter Type:** Individual — **provisional; confirm before final submit**
+- **Country of residence:** Germany — **provisional; confirm before final submit**
+- **Organization name:** blank
 - **App Status:** Existing
 - **What changed during the submission period:** Added the WebMCP surface after
   August 25: browser-native tool registration, signed-in session actions,
@@ -26,14 +26,13 @@ you lick the stamp.
 - **Live URL:** `https://staging.clawpost.org/mail`
 - **Testing instructions:** use the private instructions below.
 - **Public code repository:** `https://github.com/clawpost/clawpost-webmcp`
-- **Agents/clients tested:** Chrome 152 native `document.modelContext` binding;
-  Playwright's scripted browser-agent harness; `[ADD ChatGPT in-app browser only
-after the real take succeeds]`.
-- **AI tools used while building:** Codex desktop/CLI for repository archaeology,
-  security review, implementation, tests, browser validation, and submission
-  drafting; `[ADD the real video client only after it succeeds]`.
-- **Level of learning:** `[CONFIRM; recommended: Significant]`
-- **Reusable career AI value:** `[CONFIRM: Yes / No]`
+- **Agents/clients tested:** ChatGPT Codex in-app browser using native WebMCP
+  discovery and calls; Google Chrome 149+ using the repository's Playwright
+  browser-agent harness.
+- **AI tools used while building:** OpenAI Codex for implementation, security
+  review, browser verification, demo scripting, and submission preparation.
+- **Level of learning:** Significant — **provisional; confirm before final submit**
+- **Reusable career AI value:** Yes — **provisional; confirm before final submit**
 
 ## Inspiration / what ClawPost is
 
@@ -109,8 +108,10 @@ tests on a real Postgres (including "commercial mail earns no soundtrack" —
 generated songs stay a correspondence-lane gift), and a Playwright arc where
 a scripted agent discovers the route-scoped tools, fills the visible composer,
 the human accepts the draft, the agent hits the handoff boundary, and the test
-then clicks Send as the human. The submission video uses a real browser agent
-choosing and calling those WebMCP tools.
+then clicks Send as the human. The submission video uses that verified
+browser-agent harness and labels it honestly on screen. Separately, native
+WebMCP discovery and calls were verified against the signed-in judge account in
+ChatGPT Codex's in-app browser on 2026-09-04.
 
 ## How AI capabilities are used
 
@@ -140,8 +141,9 @@ agent can't click a checkout page).
 
 ## Try it
 
-- Judge build: **https://staging.clawpost.org** — sign in, open `/mail` in a WebMCP-enabled
-  browser, and ask your agent to fill the visible composer and quote postage.
+- Judge build: **https://staging.clawpost.org/mail** — use the private judge
+  identity saved in Devpost, then ask the browser agent to identify the counter,
+  quote a letter, and fill the visible composer.
 - This repo: the WebMCP library + a build-free demo (`demo/index.html`)
   that works in any browser via the bundled mock.
 
@@ -150,16 +152,9 @@ agent can't click a checkout page).
 Paste this section into Devpost's private **Testing Instructions** field; never
 commit the demo credentials to this repository.
 
-1. Open `https://staging.clawpost.org/mail` in ChatGPT's in-app browser and sign in
-   with `[JUDGE EMAIL]` / `[JUDGE AUTH METHOD]`.
-2. Ask: “Use the tools on this page to draft a warm two-sentence thank-you
-   letter to `[SEEDED RECIPIENT POSTBOX]`. Put it in the visible composer so I
-   can review it.”
-3. Ask what the letter will cost. Edit one word, click **Create Draft**, and
-   open **Review Draft**.
-4. Ask the agent to send it. Confirm it returns a review handoff and that the
-   page still says **DRAFT — NOT SENT YET**. The judge may click **Send**; the
-   account is funded for testing.
+The complete test-only identity, verification method, funded postbox, prompts,
+and safety warning are saved in Devpost's private field. They are deliberately
+not duplicated in this public repository.
 
 Keep the live judge path free and available without restrictions through
 2026-09-21 17:00 PT. After the submission deadline, freeze the submitted site,
@@ -185,17 +180,18 @@ wallet is settled.
 
 ## Known limitations
 
-- The real-model ChatGPT in-app-browser take is not recorded yet; current local
-  proof includes native Chrome registration plus scripted Playwright invocation.
-- Judges need a funded seeded staging account supplied only in Devpost's private
-  testing field.
+- The polished 1:46 movie is a clearly labelled browser-agent-harness recording
+  with AI-generated narration, not a real-model screen recording. Native WebMCP
+  discovery and calls were separately verified in ChatGPT Codex's in-app browser.
+- The movie is rendered as a local handoff artifact; a public YouTube or Vimeo
+  URL still needs to be added to Devpost.
 - Direct Post is staging-only and excluded from the main demo claim.
 - The public repository contains the WebMCP adapter and standalone demo, not yet
   all source/assets required to reproduce the full hosted ClawPost experience.
 
 ---
 
-_Submission checklist: live URL ✓ · seeded judge account [create] · <3 min
-narrated real-agent video [record] · public AGPL-3.0 repository ✓, but Devpost's
+_Submission checklist: live URL ✓ · seeded judge account ✓ · 1:46 narrated
+browser-agent demo ✓ · public video URL [upload] · public AGPL-3.0 repository ✓, but Devpost's
 “all necessary source/assets/instructions” rule is not yet met because the
 full app repo is private [resolve before submit] · description ✓_

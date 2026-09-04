@@ -3,10 +3,11 @@
 ## Produced cut — 2026-09-04
 
 The current local handoff is 1:45.95, 1920×1080, H.264/AAC, with AI-generated
-Samantha narration disclosed on the end card. It uses the verified Playwright
-browser-agent harness, labels that fact on screen, demonstrates the human-only
-send boundary, and closes by separating the shared WebMCP counter from the
-remote-MCP persistent-agent mode.
+Samantha narration disclosed on the end card. Its original instrumental bed was
+generated locally with Mochi Records' CLI and ACE-Step 1.5 Q4 (seed 528). It uses
+the verified Playwright browser-agent harness, labels that fact on screen,
+demonstrates the human-only send boundary, and closes by separating the shared
+WebMCP counter from the remote-MCP persistent-agent mode.
 
 Five 3:2 gallery stills were exported beside it and uploaded to the live Devpost
 draft. The remaining media step is publishing the MP4 to YouTube or Vimeo and
